@@ -14,7 +14,7 @@ I will use this for making charts of [spectral power distributions](https://en.w
 
 Screenshot of the [AreaChart06.java](xchart-demo/src/main/java/org/knowm/xchart/demo/charts/area/AreaChart06.java) demo file, using `java.awt.LinearGradientPaint`:
 
-![](https://raw.githubusercontent.com/pfroud/XChart/develop/etc/XChart_area_with_LinearGradientPaint.png)
+![](https://raw.githubusercontent.com/pfroud/XChart/master/etc/XChart_area_with_LinearGradientPaint.png)
 
 ## Simplest Example
 
