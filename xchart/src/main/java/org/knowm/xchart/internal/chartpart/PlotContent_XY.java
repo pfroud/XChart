@@ -3,6 +3,8 @@ package org.knowm.xchart.internal.chartpart;
 import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.text.Format;
 import java.util.Map;
 import org.knowm.xchart.XYSeries;
@@ -101,7 +103,7 @@ public class PlotContent_XY<ST extends AxesChartStyler, S extends XYSeries>
         if (Double.isNaN(next)) {
 
           // for area charts
-          g.setColor(series.getFillColor());
+          g.setPaint(series.getFillPaintOrColor());
           closePathXY(g, path, previousX, yZeroOffset, polygonStartX, polygonStartY);
           path = null;
 
@@ -152,7 +154,6 @@ public class PlotContent_XY<ST extends AxesChartStyler, S extends XYSeries>
         // System.out.println("---");
 
         // paint line
-
         boolean isSeriesLineOrArea =
             XYSeriesRenderStyle.Line == series.getXYSeriesRenderStyle()
                 || XYSeriesRenderStyle.Area == series.getXYSeriesRenderStyle()
@@ -342,8 +343,30 @@ public class PlotContent_XY<ST extends AxesChartStyler, S extends XYSeries>
         g.setStroke(series.getLineStyle());
         g.draw(smoothPath);
       }
+
+      final Paint fillPaint = series.getFillPaint();
+      if (fillPaint instanceof LinearGradientPaint) {
+        final LinearGradientPaint paintCasted = (LinearGradientPaint) fillPaint;
+
+        final Rectangle2D bounds = getBounds();
+        final double xStart = bounds.getX() + xLeftMargin;
+        final double xEnd = bounds.getX() + bounds.getWidth() - xLeftMargin;
+
+        LinearGradientPaint newGradient =
+            new LinearGradientPaint(
+                new Point2D.Double(xStart, 0),
+                new Point2D.Double(xEnd, 0),
+                paintCasted.getFractions(),
+                paintCasted.getColors());
+
+        g.setPaint(newGradient);
+
+      } else {
+
+        g.setPaint(fillPaint);
+      }
+
       // close any open path for area charts
-      g.setColor(series.getFillColor());
       closePathXY(g, path, previousX, yZeroOffset, polygonStartX, polygonStartY);
     }
   }

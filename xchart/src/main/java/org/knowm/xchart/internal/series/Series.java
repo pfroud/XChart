@@ -13,6 +13,7 @@ public abstract class Series {
   private final String name;
   private String label;
   private Color fillColor;
+  private Paint fillPaint;
   private boolean showInLegend = true;
   private boolean isEnabled = true;
   private int yAxisGroup = 0;
@@ -44,6 +45,23 @@ public abstract class Series {
 
     this.fillColor = fillColor;
     return this;
+  }
+
+  public Paint getFillPaint() {
+    return fillPaint;
+  }
+
+  public Series setFillPaint(Paint fillPaint) {
+    this.fillPaint = fillPaint;
+    return this;
+  }
+
+  public Paint getFillPaintOrColor() {
+    if (fillPaint == null) {
+      return fillColor;
+    } else {
+      return fillPaint;
+    }
   }
 
   public String getName() {

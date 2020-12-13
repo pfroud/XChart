@@ -6,6 +6,16 @@ XChart is a light weight Java library for plotting data.
 
 XChart is a light-weight and convenient library for plotting data designed to go from data to chart in the least amount of time possible and to take the guess-work out of customizing the chart style.
 
+## New in pfroud's fork
+
+Added support for filling an area chart with any `java.awt.Paint`, instead of only a `java.awt.Color`.
+
+I will use this for making charts of [spectral power distributions](https://en.wikipedia.org/wiki/Spectral_power_distribution) for LEDs.
+
+Screenshot of the [AreaChart06.java](xchart-demo/src/main/java/org/knowm/xchart/demo/charts/area/AreaChart06.java) demo file, using `java.awt.LinearGradientPaint`:
+
+![](https://raw.githubusercontent.com/pfroud/XChart/develop/etc/XChart_area_with_LinearGradientPaint.png)
+
 ## Simplest Example
 
 Create a `XYChart` instance via `QuickChart`, add a series of data to it, and either display it or save it as a bitmap.  
