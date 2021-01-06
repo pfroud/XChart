@@ -2,6 +2,7 @@ package org.knowm.xchart.style;
 
 import java.awt.*;
 import org.knowm.xchart.PieSeries.PieSeriesRenderStyle;
+import org.knowm.xchart.style.theme.Theme;
 
 /** @author timmolter */
 public class PieStyler extends Styler {
@@ -29,6 +30,8 @@ public class PieStyler extends Styler {
 
     super.setAllStyles();
 
+    this.setHasAnnotations(true);
+
     this.chartPieSeriesRenderStyle = PieSeriesRenderStyle.Pie;
     this.isCircular = theme.isCircular();
     this.startAngleInDegrees = theme.getStartAngleInDegrees();
@@ -36,9 +39,6 @@ public class PieStyler extends Styler {
     this.annotationType = theme.getAnnotationType();
     this.drawAllAnnotations = theme.isDrawAllAnnotations();
     this.donutThickness = theme.getDonutThickness();
-
-    // Annotations ////////////////////////////////
-    this.hasAnnotations = true;
 
     this.isSumVisible = theme.isSumVisible();
     this.sumFont = theme.getSumFont();

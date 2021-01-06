@@ -23,10 +23,10 @@ import org.knowm.xchart.style.Styler;
 public abstract class AxisTickCalculator_ {
 
   /** the List of tick label position in pixels */
-  final List<Double> tickLocations = new LinkedList<Double>();
+  final List<Double> tickLocations = new LinkedList<>();
 
   /** the List of tick label values */
-  final List<String> tickLabels = new LinkedList<String>();
+  final List<String> tickLabels = new LinkedList<>();
 
   final Direction axisDirection;
 
@@ -68,30 +68,19 @@ public abstract class AxisTickCalculator_ {
   AxisTickCalculator_(
       Direction axisDirection,
       double workingSpace,
+      double minValue,
+      double maxValue,
       List<Double> axisValues,
       AxesChartStyler styler) {
     this.axisDirection = axisDirection;
     this.workingSpace = workingSpace;
-    this.axisValues = axisValues;
-    this.minValue =
-        getAxisMinValue(
-            styler,
-            axisDirection,
-            axisValues.stream()
-                .filter(Objects::nonNull)
-                .mapToDouble(x -> x)
-                .min()
-                .orElseThrow(NoSuchElementException::new));
-
-    this.maxValue =
-        getAxisMaxValue(
-            styler,
-            axisDirection,
-            axisValues.stream()
-                .filter(Objects::nonNull)
-                .mapToDouble(x -> x)
-                .max()
-                .orElseThrow(NoSuchElementException::new));
+    Set<Double> axisValuesWithMinMax = new LinkedHashSet<>();
+    axisValuesWithMinMax.add(minValue);
+    axisValuesWithMinMax.addAll(axisValues);
+    axisValuesWithMinMax.add(maxValue);
+    this.axisValues = new ArrayList<>(axisValuesWithMinMax);
+    this.minValue = getAxisMinValue(styler, axisDirection, minValue);
+    this.maxValue = getAxisMaxValue(styler, axisDirection, maxValue);
     this.styler = styler;
   }
 
@@ -105,9 +94,13 @@ public abstract class AxisTickCalculator_ {
 
     // System.out.println("******");
 
+    //    System.out.println("minValue = " + minValue);
+    //    System.out.println("(minValue % gridStep) = " + (minValue % gridStep));
+
     return minValue - (minValue % gridStep) - gridStep;
   }
 
+  // TODO make these non-public??
   public List<Double> getTickLocations() {
 
     return tickLocations;
@@ -293,6 +286,7 @@ public abstract class AxisTickCalculator_ {
         // This happens when the data values are almost the same but differ by a very tiny amount.
         // The solution for now is to create a single axis label and tick at the average value
         tickLabels.add(getAxisFormat().format(BigDecimal.valueOf((maxValue + minValue) / 2.0)));
+        double averageValue = (maxValue + minValue) / 2.0;
         tickLocations.add(workingSpace / 2.0);
         return;
       } else if (firstPositionAsDouble == Double.NEGATIVE_INFINITY) {
@@ -413,7 +407,7 @@ public abstract class AxisTickCalculator_ {
             .collect(Collectors.toList()));
   }
 
-  private static boolean areAllTickLabelsUnique(List<?> tickLabels) {
+  boolean areAllTickLabelsUnique(List<?> tickLabels) {
     return new LinkedHashSet<>(tickLabels).size() == tickLabels.size();
   }
 

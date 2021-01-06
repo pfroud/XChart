@@ -1,10 +1,15 @@
 package org.knowm.xchart.style;
 
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 import org.knowm.xchart.style.markers.Marker;
+import org.knowm.xchart.style.theme.GGPlot2Theme;
+import org.knowm.xchart.style.theme.MatlabTheme;
+import org.knowm.xchart.style.theme.Theme;
+import org.knowm.xchart.style.theme.XChartTheme;
 
 /**
  * The styler is used to manage all things related to styling of the vast number of Chart components
@@ -16,7 +21,6 @@ public abstract class Styler {
   /** the default Theme */
   Theme theme = new XChartTheme();
 
-  boolean hasAnnotations = false; // set by subclass
   // Chart Style ///////////////////////////////
   private Font baseFont;
   private Color chartBackgroundColor;
@@ -41,18 +45,19 @@ public abstract class Styler {
   private int legendSeriesLineLength;
   private LegendPosition legendPosition;
   private LegendLayout legendLayout = LegendLayout.Vertical;
-  // Chart InfoPanel ///////////////////////////////
-  private boolean infoPanelVisible;
-  private Color infoPanelBackgroundColor;
-  private Color infoPanelBorderColor;
-  private Font infoPanelFont;
-  private int infoPanelPadding;
-  private InfoPanelPosition infoPanelPosition;
   // Chart Plot Area ///////////////////////////////
   private Color plotBackgroundColor;
   private Color plotBorderColor;
   private boolean isPlotBorderVisible;
   private double plotContentSize = .92;
+
+  // Chart InfoPanel ///////////////////////////////
+  // TODO move these to an annotation styler
+  private Color infoPanelBackgroundColor;
+  private Color infoPanelBorderColor;
+  private Font infoPanelFont;
+  private int infoPanelPadding;
+
   // Tool Tips ///////////////////////////////
   private boolean isToolTipsEnabled;
   private boolean isToolTipsAlwaysVisible;
@@ -61,34 +66,31 @@ public abstract class Styler {
   private Color toolTipBorderColor;
   private Font toolTipFont;
   private Color toolTipHighlightColor;
-  // Cursor ////////////////////////////////
-  private boolean isCursorEnabled;
-  private Color cursorColor;
-  private float cursorSize;
-  private Font cursorFont;
-  private Color cursorFontColor;
-  private Color cursorBackgroundColor;
-  // Annotations ///////////////////////////////
+
+  //  // Annotations ///////////////////////////////
+  private boolean hasAnnotations = false; // set by subclass
   private Font annotationsFont;
   private Color annotationsFontColor;
+  // TODO move defaults to theme
   private int annotationsRotation = 0;
   private float annotationsPosition = 0.5f;
   private boolean showTotalAnnotations = false;
+
   // Misc. ///////////////////////////////
   private boolean antiAlias = true;
   private String decimalPattern;
-  private HashMap<Integer, YAxisPosition> yAxisAlignmentMap = new HashMap<Integer, YAxisPosition>();
+  // TODO I don't think this should be in styler directly?
+  private HashMap<Integer, YAxisPosition> yAxisAlignmentMap = new HashMap<>();
   private int yAxisLeftWidthHint;
+
+  // TODO move this to boxplot styler
   // Box plot data ///////////////////////////////
   private boolean showWithinAreaPoint = false;
+
   // Axis Title Font Color
   private Color xAxisTitleColor;
   private Color yAxisTitleColor;
-  private Map<Integer, Color> yAxisGroupTitleColorMap = new HashMap<Integer, Color>();
-
-  // Custom formatting functions for the cursor
-  private Function<Double, String> customCursorXDataFormattingFunction;
-  private Function<Double, String> customCursorYDataFormattingFunction;
+  private Map<Integer, Color> yAxisGroupTitleColorMap = new HashMap<>();
 
   void setAllStyles() {
 
@@ -121,12 +123,11 @@ public abstract class Styler {
     legendPosition = theme.getLegendPosition();
 
     // Info Panel
-    infoPanelVisible = theme.isInfoPanelVisible();
+    // TODO move these to an annotation styler
     infoPanelBackgroundColor = theme.getInfoPanelBackgroundColor();
     infoPanelBorderColor = theme.getInfoPanelBorderColor();
     infoPanelFont = theme.getInfoPanelFont();
     infoPanelPadding = theme.getInfoPanelPadding();
-    infoPanelPosition = theme.getInfoPanelPosition();
 
     // Chart Plot Area ///////////////////////////////
     plotBackgroundColor = theme.getPlotBackgroundColor();
@@ -143,17 +144,13 @@ public abstract class Styler {
     toolTipFont = theme.getToolTipFont();
     toolTipHighlightColor = theme.getToolTipHighlightColor();
 
-    // Cursor ////////////////////////////////
-    this.isCursorEnabled = theme.isCursorEnabled();
-    this.cursorColor = theme.getCursorColor();
-    this.cursorSize = theme.getCursorSize();
-    this.cursorFont = theme.getCursorFont();
-    this.cursorFontColor = theme.getCursorFontColor();
-    this.cursorBackgroundColor = theme.getCursorBackgroundColor();
-
-    // Annotations ///////////////////////////////
+    //    // Annotations ///////////////////////////////
+    //    hasAnnotations = false; // set by subclass
     annotationsFont = theme.getAnnotationFont();
     annotationsFontColor = theme.getAnnotationsFontColor();
+    //    annotationsRotation = 0;
+    //     annotationsPosition = 0.5f;
+    //    showTotalAnnotations = theme.getann;
 
     // Formatting
     decimalPattern = null;
@@ -477,6 +474,16 @@ public abstract class Styler {
     return this;
   }
 
+  public enum LegendPosition {
+    OutsideE,
+    InsideNW,
+    InsideNE,
+    InsideSE,
+    InsideSW,
+    InsideN,
+    InsideS,
+    OutsideS
+  }
   /**
    * Set the legend layout
    *
@@ -492,6 +499,10 @@ public abstract class Styler {
     this.legendLayout = legendLayout;
   }
 
+  public enum LegendLayout {
+    Vertical,
+    Horizontal
+  }
   // Chart InfoPanel ///////////////////////////////
 
   public Color getInfoPanelBackgroundColor() {
@@ -527,16 +538,6 @@ public abstract class Styler {
     return this;
   }
 
-  public boolean isInfoPanelVisible() {
-    return infoPanelVisible;
-  }
-
-  public Styler setInfoPanelVisible(boolean infoPanelVisible) {
-
-    this.infoPanelVisible = infoPanelVisible;
-    return this;
-  }
-
   public int getInfoPanelPadding() {
 
     return infoPanelPadding;
@@ -545,17 +546,6 @@ public abstract class Styler {
   public Styler setInfoPanelPadding(int infoPanelPadding) {
 
     this.infoPanelPadding = infoPanelPadding;
-    return this;
-  }
-
-  public InfoPanelPosition getInfoPanelPosition() {
-
-    return infoPanelPosition;
-  }
-
-  public Styler setInfoPanelPosition(InfoPanelPosition infoPanelPosition) {
-
-    this.infoPanelPosition = infoPanelPosition;
     return this;
   }
 
@@ -663,6 +653,12 @@ public abstract class Styler {
     return this;
   }
 
+  public enum ToolTipType {
+    xLabels,
+    yLabels,
+    xAndYLabels
+  }
+
   public Color getToolTipBackgroundColor() {
 
     return toolTipBackgroundColor;
@@ -709,71 +705,7 @@ public abstract class Styler {
     return this;
   }
 
-  // Cursor ///////////////////////////////
-
-  public boolean isCursorEnabled() {
-    return isCursorEnabled;
-  }
-
-  public Styler setCursorEnabled(boolean isCursorEnabled) {
-
-    this.isCursorEnabled = isCursorEnabled;
-    return this;
-  }
-
-  public Color getCursorColor() {
-    return cursorColor;
-  }
-
-  public Styler setCursorColor(Color cursorColor) {
-
-    this.cursorColor = cursorColor;
-    return this;
-  }
-
-  public float getCursorSize() {
-
-    return cursorSize;
-  }
-
-  public Styler setCursorSize(float cursorSize) {
-
-    this.cursorSize = cursorSize;
-    return this;
-  }
-
-  public Font getCursorFont() {
-
-    return cursorFont;
-  }
-
-  public Styler setCursorFont(Font cursorFont) {
-
-    this.cursorFont = cursorFont;
-    return this;
-  }
-
-  public Color getCursorFontColor() {
-
-    return cursorFontColor;
-  }
-
-  public Styler setCursorFontColor(Color cursorFontColor) {
-
-    this.cursorFontColor = cursorFontColor;
-    return this;
-  }
-
-  public Color getCursorBackgroundColor() {
-
-    return cursorBackgroundColor;
-  }
-
-  public Styler setCursorBackgroundColor(Color cursorBackgroundColor) {
-
-    this.cursorBackgroundColor = cursorBackgroundColor;
-    return this;
-  }
+  // Annotations ///////////////////////////////
 
   public Boolean hasAnnotations() {
 
@@ -860,13 +792,15 @@ public abstract class Styler {
     return this;
   }
 
+  // Number Formatter ///////////////////////////////
+
   public String getDecimalPattern() {
 
     return decimalPattern;
   }
 
   /**
-   * Set the decimal formatter for all numbers on the chart rendered as Strings
+   * Set the decimal formatter for all numbers on the chart
    *
    * @param decimalPattern - the pattern describing the decimal format
    */
@@ -876,7 +810,7 @@ public abstract class Styler {
     return this;
   }
 
-  // Annotations ///////////////////////////////
+  // Y-Axis Group Position ///////////////////////////////
 
   public YAxisPosition getYAxisGroupPosistion(int yAxisGroup) {
 
@@ -884,7 +818,7 @@ public abstract class Styler {
   }
 
   /**
-   * Set the YAxis group position.
+   * Set the Y-Axis group position.
    *
    * @param yAxisGroup
    * @param yAxisPosition
@@ -894,16 +828,16 @@ public abstract class Styler {
     yAxisAlignmentMap.put(yAxisGroup, yAxisPosition);
   }
 
-  public Theme getTheme() {
-
-    return theme;
+  public enum YAxisPosition {
+    Left,
+    Right
   }
 
   public boolean getAntiAlias() {
 
     return antiAlias;
   }
-
+  // TODO add javadocs to all setters that are not yet documented.
   public void setAntiAlias(boolean newVal) {
 
     antiAlias = newVal;
@@ -914,6 +848,12 @@ public abstract class Styler {
     return yAxisLeftWidthHint;
   }
 
+  /**
+   * Set the width of the Y-Axis tick labels on the left side of the chart. This can help to align
+   * the start of the X-Axis for two or more charts that are arranged in a column of charts.
+   *
+   * @param yAxisLeftWidthHint
+   */
   public void setYAxisLeftWidthHint(int yAxisLeftWidthHint) {
 
     this.yAxisLeftWidthHint = yAxisLeftWidthHint;
@@ -941,6 +881,7 @@ public abstract class Styler {
     return this;
   }
 
+  // TODO is this not used internally??
   public Color getYAxisTitleColor() {
 
     return yAxisTitleColor;
@@ -967,44 +908,6 @@ public abstract class Styler {
     return this;
   }
 
-  public Function<Double, String> getCustomCursorXDataFormattingFunction() {
-    return customCursorXDataFormattingFunction;
-  }
-
-  public void setCustomCursorXDataFormattingFunction(
-      Function<Double, String> customCursorXDataFormattingFunction) {
-    this.customCursorXDataFormattingFunction = customCursorXDataFormattingFunction;
-  }
-
-  public Function<Double, String> getCustomCursorYDataFormattingFunction() {
-    return customCursorYDataFormattingFunction;
-  }
-
-  public void setCustomCursorYDataFormattingFunction(
-      Function<Double, String> customCursorYDataFormattingFunction) {
-    this.customCursorYDataFormattingFunction = customCursorYDataFormattingFunction;
-  }
-
-  public enum LegendPosition {
-    OutsideE,
-    InsideNW,
-    InsideNE,
-    InsideSE,
-    InsideSW,
-    InsideN,
-    InsideS,
-    OutsideS
-  }
-
-  public enum LegendLayout {
-    Vertical,
-    Horizontal
-  }
-
-  public enum InfoPanelPosition {
-    OutsideS
-  }
-
   public enum ChartTheme {
     XChart,
     GGPlot2,
@@ -1026,20 +929,8 @@ public abstract class Styler {
     }
   }
 
-  public enum TextAlignment {
-    Left,
-    Centre,
-    Right
-  }
+  public Theme getTheme() {
 
-  public enum ToolTipType {
-    xLabels,
-    yLabels,
-    xAndYLabels
-  }
-
-  public enum YAxisPosition {
-    Left,
-    Right
+    return theme;
   }
 }

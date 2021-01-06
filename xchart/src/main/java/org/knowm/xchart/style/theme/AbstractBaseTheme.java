@@ -1,11 +1,10 @@
-package org.knowm.xchart.style;
+package org.knowm.xchart.style.theme;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Stroke;
 import org.knowm.xchart.style.PieStyler.AnnotationType;
-import org.knowm.xchart.style.Styler.InfoPanelPosition;
 import org.knowm.xchart.style.Styler.LegendPosition;
 import org.knowm.xchart.style.Styler.ToolTipType;
 import org.knowm.xchart.style.colors.BaseSeriesColors;
@@ -160,12 +159,6 @@ public abstract class AbstractBaseTheme implements Theme {
   }
 
   @Override
-  public boolean isInfoPanelVisible() {
-
-    return false;
-  }
-
-  @Override
   public Color getInfoPanelBackgroundColor() {
 
     return ChartColor.getAWTColor(ChartColor.WHITE);
@@ -181,12 +174,6 @@ public abstract class AbstractBaseTheme implements Theme {
   public int getInfoPanelPadding() {
 
     return 10;
-  }
-
-  @Override
-  public InfoPanelPosition getInfoPanelPosition() {
-
-    return InfoPanelPosition.OutsideS;
   }
 
   // Chart Axes ///////////////////////////////
@@ -499,7 +486,7 @@ public abstract class AbstractBaseTheme implements Theme {
   @Override
   public Font getSumFont() {
 
-    return getAnnotationFont();
+    return getBaseFont().deriveFont(15f);
   }
 
   // Line, Scatter, Area Charts ///////////////////////////////
@@ -526,7 +513,6 @@ public abstract class AbstractBaseTheme implements Theme {
 
   // Annotations ///////////////////////////////
 
-  /** Pie font, size 12. */
   @Override
   public Font getAnnotationFont() {
 

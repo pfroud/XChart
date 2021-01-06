@@ -1,6 +1,7 @@
 package org.knowm.xchart.style;
 
 import java.awt.*;
+import org.knowm.xchart.style.theme.Theme;
 
 public class RadarStyler extends Styler {
 
@@ -39,9 +40,6 @@ public class RadarStyler extends Styler {
 
     this.isCircular = theme.isCircular();
     this.startAngleInDegrees = theme.getStartAngleInDegrees();
-
-    // Annotations ////////////////////////////////
-    this.hasAnnotations = true;
 
     this.markerSize = theme.getMarkerSize();
 

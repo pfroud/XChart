@@ -1,6 +1,7 @@
 package org.knowm.xchart.style;
 
 import java.awt.*;
+import org.knowm.xchart.style.theme.Theme;
 
 public class DialStyler extends Styler {
 
@@ -53,9 +54,6 @@ public class DialStyler extends Styler {
     super.setAllStyles();
 
     this.isCircular = theme.isCircular();
-
-    // Annotations ////////////////////////////////
-    this.hasAnnotations = true;
 
     this.axisTickMarksColor = theme.getAxisTickMarksColor();
     this.axisTickMarksStroke = theme.getAxisTickMarksStroke();

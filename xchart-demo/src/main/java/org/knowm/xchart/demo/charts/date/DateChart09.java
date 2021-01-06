@@ -18,19 +18,17 @@ import org.knowm.xchart.demo.charts.ExampleChart;
  * <p>Demonstrates the following:
  *
  * <ul>
- *   <li>Rotated X-Axis labels
- *   <li>Setting a custom date formatter String
+ *   <li>Rotated 90 degrees X-Axis labels
+ *   <li>Setting custom X-Axis tick labels
+ *   <li>Setting custom cursor tool tip text
  */
 public class DateChart09 implements ExampleChart<XYChart> {
-
-  private static final LocalDateTime BEGINNING_OF_THE_YEAR =
-      LocalDateTime.of(2011, Month.JANUARY, 1, 0, 0, 0, 0);
 
   public static void main(String[] args) {
 
     ExampleChart<XYChart> exampleChart = new DateChart09();
     XYChart chart = exampleChart.getChart();
-    new SwingWrapper<XYChart>(chart).displayChart();
+    new SwingWrapper<>(chart).displayChart();
   }
 
   @Override
@@ -38,11 +36,7 @@ public class DateChart09 implements ExampleChart<XYChart> {
 
     // Create Chart
     XYChart chart =
-        new XYChartBuilder()
-            .width(800)
-            .height(600)
-            .title("Custom Date Formatter Without Years")
-            .build();
+        new XYChartBuilder().width(800).height(600).title(getClass().getSimpleName()).build();
 
     // Customize Chart
     chart.getStyler().setLegendVisible(false);
@@ -60,12 +54,17 @@ public class DateChart09 implements ExampleChart<XYChart> {
 
     chart.addSeries("blah", xData, yData);
 
+    // set custom X-Axis tick labels
     LocalDateTime startTime = LocalDateTime.of(2001, Month.JANUARY, 1, 0, 0, 0);
     DateTimeFormatter xTickFormatter = DateTimeFormatter.ofPattern("LLL");
-    DateTimeFormatter cursorXFormatter = DateTimeFormatter.ofPattern("LLL dd");
-    chart.setCustomXAxisTickLabelsFormatter(
-        x -> startTime.plusDays(x.longValue()).format(xTickFormatter));
+    chart
+        .getStyler()
+        .setxAxisTickLabelsFormattingFunction(
+            x -> startTime.plusDays(x.longValue()).format(xTickFormatter));
+
+    // set custom cursor tool tip text
     chart.getStyler().setCursorEnabled(true);
+    DateTimeFormatter cursorXFormatter = DateTimeFormatter.ofPattern("LLL dd");
     chart
         .getStyler()
         .setCustomCursorXDataFormattingFunction(

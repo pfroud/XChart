@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.knowm.xchart</groupId>
   <artifactId>xchart-parent</artifactId>
-  <version>3.6.7-SNAPSHOT</version>
+  <version>3.8.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>XChart Parent</name>
   <description>XChart is a light weight Java library for plotting data.</description>
@@ -76,7 +76,7 @@
       <dependency>
         <groupId>de.rototor.pdfbox</groupId>
         <artifactId>graphics2d</artifactId>
-        <version>0.28</version>
+        <version>0.30</version>
         <optional>true</optional>
       </dependency>
       <dependency>
@@ -137,6 +137,19 @@
 
   <build>
     <plugins>
+      <!-- Add Automatic Module Name to MANIFEST for compatibility with modular applications -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.2.0</version>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Automatic-Module-Name>org.knowm.xchart</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
       <!-- Ensure compilation is done under Java 8 in all environments -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
